@@ -206,7 +206,7 @@ export default function DownloadPage() {
         {/* Download Delay Modal */}
         {isDownloadModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-base-300">
+            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-base-300">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-6">
                   <h3 className="text-xl font-bold">
@@ -223,9 +223,19 @@ export default function DownloadPage() {
                 </div>
 
                 <div className="flex flex-col items-center gap-6">
+                  {/* Top Ad */}
+                  <div className="w-full flex justify-center bg-base-200 rounded-xl p-2 min-h-[100px]">
+                    <AdSense
+                      client="ca-pub-9988710026850454"
+                      slot="7741827366"
+                      className="block w-full"
+                      style={{ minHeight: "90px" }}
+                    />
+                  </div>
+
                   {countdown > 0
                     ? (
-                      <div className="relative w-24 h-24">
+                      <div className="relative w-24 h-24 my-4">
                         <svg className="w-full h-full -rotate-90">
                           <circle
                             cx="48"
@@ -255,19 +265,16 @@ export default function DownloadPage() {
                       </div>
                     )
                     : (
-                      <div className="loading loading-spinner loading-lg text-primary">
+                      <div className="loading loading-spinner loading-lg text-primary my-4">
                       </div>
                     )}
 
-                  <div className="w-full bg-base-200 rounded-xl p-4 min-h-[250px] flex flex-col items-center justify-center text-center">
-                    <span className="text-xs uppercase tracking-wider opacity-50 mb-2">
-                      {t("downloadPage.advertisement")}
-                    </span>
-                    {/* Placeholder for AdSense - Replace client/slot with real values */}
+                  <div className="w-full flex justify-center bg-base-200 rounded-xl p-2 min-h-[100px]">
                     <AdSense
                       client="ca-pub-9988710026850454"
-                      slot="1234567890"
-                      className="min-h-[200px] w-full"
+                      slot="9350244892"
+                      className="block w-full"
+                      style={{ minHeight: "90px" }}
                     />
                   </div>
                 </div>
