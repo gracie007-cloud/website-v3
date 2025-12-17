@@ -9,6 +9,7 @@ import Footer from "./Footer";
 import { AppBackground } from "./AppBackground";
 import { useTheme } from "../hooks/useTheme";
 import { LoadingOverlay } from "./LoadingOverlay";
+import { AdSense } from "./AdSense";
 
 export const ThemeContext = createContext<{
   theme: "light" | "dark";
@@ -28,9 +29,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="z-10 flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow">{children}</main>
+
+        <div className="container mx-auto px-4 py-8 w-full max-w-[90%] lg:max-w-[85%] xl:max-w-[75%] flex justify-center">
+          <AdSense
+            client="ca-pub-9988710026850454"
+            slot="7741827366"
+            className="block w-full"
+            style={{ minHeight: "120px", width: "100%" }}
+            format="auto"
+            responsive="true"
+          />
+        </div>
+
         <Footer />
       </div>
     </ThemeContext.Provider>
   );
 }
-

@@ -656,6 +656,11 @@ export default function DownloadPage() {
                             target="_blank"
                             rel="noreferrer"
                             className="link link-primary text-xs"
+                            onClick={(e) =>
+                              handleDownload(
+                                e,
+                                "https://flathub.org/apps/one.ablaze.floorp",
+                              )}
                           >
                             {t("downloadPage.view")}
                           </a>
@@ -676,6 +681,8 @@ export default function DownloadPage() {
                             target="_blank"
                             rel="noreferrer"
                             className="link link-primary text-xs"
+                            onClick={(e) =>
+                              handleDownload(e, "https://ppa.floorp.app/")}
                           >
                             {t("downloadPage.setup")}
                           </a>
