@@ -114,7 +114,10 @@
         "viewCask": "Cask を見る",
         "flatpakDesc": "Linux アプリケーションサンドボックス",
         "viewFlathub": "Flathub で見る",
-        "legalPrivacy": "法的情報とプライバシー"
+        "legalPrivacy": "法的情報とプライバシー",
+        "downloadingIn": "{{count}} 秒後にダウンロードが開始されます...",
+        "pleaseWait": "ダウンロードの準備をしています。少々お待ちください。",
+        "advertisement": "広告"
     },
     "featureCards": {
         "browsing": {
