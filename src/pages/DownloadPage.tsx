@@ -14,7 +14,9 @@ import {
   Monitor,
   Package,
   SquareTerminal,
+  X,
 } from "lucide-react";
+import { AdSense } from "../components/AdSense";
 
 import WindowsIcon from "/Floorp_Platform_Windows_Gradient.png";
 import MacIcon from "/Floorp_Platform_Mac_Gradient.png";
@@ -36,6 +38,44 @@ export default function DownloadPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Platform>("windows");
   const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
+
+  // Download Delay State
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [countdown, setCountdown] = useState(4);
+  const [pendingDownloadUrl, setPendingDownloadUrl] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (isDownloadModalOpen && countdown > 0) {
+      timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    } else if (isDownloadModalOpen && countdown === 0 && pendingDownloadUrl) {
+      window.location.href = pendingDownloadUrl;
+      const closeTimer = setTimeout(() => {
+        setIsDownloadModalOpen(false);
+        setPendingDownloadUrl(null);
+        setCountdown(4);
+      }, 1000);
+      return () => clearTimeout(closeTimer);
+    }
+    return () => clearTimeout(timer);
+  }, [isDownloadModalOpen, countdown, pendingDownloadUrl]);
+
+  const handleDownload = (e: React.MouseEvent, url: string) => {
+    e.preventDefault();
+    if (isDownloadModalOpen) return;
+
+    setPendingDownloadUrl(url);
+    setCountdown(4);
+    setIsDownloadModalOpen(true);
+  };
+
+  const closeDownloadModal = () => {
+    setIsDownloadModalOpen(false);
+    setPendingDownloadUrl(null);
+    setCountdown(4);
+  };
 
   useEffect(() => {
     document.title = t("downloadPage.pageTitle");
@@ -163,6 +203,79 @@ export default function DownloadPage() {
           </p>
         </div>
 
+        {/* Download Delay Modal */}
+        {isDownloadModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-base-100 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-base-300">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-6">
+                  <h3 className="text-xl font-bold">
+                    {countdown > 0
+                      ? t("downloadPage.downloadingIn", { count: countdown })
+                      : t("downloadPage.pleaseWait")}
+                  </h3>
+                  <button
+                    onClick={closeDownloadModal}
+                    className="btn btn-sm btn-circle btn-ghost"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="flex flex-col items-center gap-6">
+                  {countdown > 0
+                    ? (
+                      <div className="relative w-24 h-24">
+                        <svg className="w-full h-full -rotate-90">
+                          <circle
+                            cx="48"
+                            cy="48"
+                            r="40"
+                            stroke="currentColor"
+                            strokeWidth="8"
+                            fill="transparent"
+                            className="text-base-300"
+                          />
+                          <circle
+                            cx="48"
+                            cy="48"
+                            r="40"
+                            stroke="currentColor"
+                            strokeWidth="8"
+                            fill="transparent"
+                            strokeDasharray={251.2}
+                            strokeDashoffset={251.2 -
+                              (251.2 * (4 - countdown)) / 4}
+                            className="text-primary transition-all duration-1000 ease-linear"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center text-3xl font-bold">
+                          {countdown}
+                        </div>
+                      </div>
+                    )
+                    : (
+                      <div className="loading loading-spinner loading-lg text-primary">
+                      </div>
+                    )}
+
+                  <div className="w-full bg-base-200 rounded-xl p-4 min-h-[250px] flex flex-col items-center justify-center text-center">
+                    <span className="text-xs uppercase tracking-wider opacity-50 mb-2">
+                      {t("downloadPage.advertisement")}
+                    </span>
+                    {/* Placeholder for AdSense - Replace client/slot with real values */}
+                    <AdSense
+                      client="ca-pub-9988710026850454"
+                      slot="1234567890"
+                      className="min-h-[200px] w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {error && (
           <div className="alert alert-error mb-8 shadow-lg">
             <Info className="stroke-current shrink-0 h-6 w-6" />
@@ -247,15 +360,16 @@ export default function DownloadPage() {
                       <p className="text-sm opacity-70 mb-4">
                         {t("downloadPage.onlineInstallerDesc")}
                       </p>
-                      <a
-                        href={getWindowsStubInstallerUrl()}
+                      <button
+                        onClick={(e) =>
+                          handleDownload(e, getWindowsStubInstallerUrl())}
                         className={`btn btn-primary w-full ${
                           isDownloadDisabled ? "btn-disabled" : ""
                         }`}
                       >
                         <Download size={18} />
                         {t("downloadPage.windowsStubInstaller")}
-                      </a>
+                      </button>
                     </div>
 
                     <div className="divider">OR</div>
@@ -272,15 +386,16 @@ export default function DownloadPage() {
                       <p className="text-sm opacity-70 mb-4">
                         {t("downloadPage.offlineInstallerDesc")}
                       </p>
-                      <a
-                        href={getWindowsDownloadUrl()}
+                      <button
+                        onClick={(e) =>
+                          handleDownload(e, getWindowsDownloadUrl())}
                         className={`btn btn-outline w-full ${
                           isDownloadDisabled ? "btn-disabled" : ""
                         }`}
                       >
                         <Download size={18} />
                         {t("downloadPage.windowsDownloadFull")}
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -381,15 +496,15 @@ export default function DownloadPage() {
                     <p className="text-sm opacity-70 mb-4">
                       {t("downloadPage.macDesc")}
                     </p>
-                    <a
-                      href={getMacOSDownloadUrl()}
+                    <button
+                      onClick={(e) => handleDownload(e, getMacOSDownloadUrl())}
                       className={`btn btn-primary w-full btn-lg ${
                         isDownloadDisabled ? "btn-disabled" : ""
                       }`}
                     >
                       <Download size={24} />
                       {t("downloadPage.macDownload")}
-                    </a>
+                    </button>
                   </div>
 
                   <div className="text-center opacity-60 text-sm">
@@ -470,15 +585,16 @@ export default function DownloadPage() {
                           {t("downloadPage.standard")}
                         </span>
                       </div>
-                      <a
-                        href={getLinuxDownloadUrl()}
+                      <button
+                        onClick={(e) =>
+                          handleDownload(e, getLinuxDownloadUrl())}
                         className={`btn btn-primary w-full mb-2 ${
                           isDownloadDisabled ? "btn-disabled" : ""
                         }`}
                       >
                         <Download size={18} />
                         {t("downloadPage.downloadTar")}
-                      </a>
+                      </button>
                     </div>
 
                     <div className="p-4 bg-base-100 rounded-xl">
@@ -490,15 +606,16 @@ export default function DownloadPage() {
                           {t("downloadPage.arm")}
                         </span>
                       </div>
-                      <a
-                        href={getLinuxAArch64DownloadUrl()}
+                      <button
+                        onClick={(e) =>
+                          handleDownload(e, getLinuxAArch64DownloadUrl())}
                         className={`btn btn-outline w-full ${
                           isDownloadDisabled ? "btn-disabled" : ""
                         }`}
                       >
                         <Download size={18} />
                         {t("downloadPage.downloadTarArm")}
-                      </a>
+                      </button>
                     </div>
                   </div>
 

@@ -114,7 +114,10 @@
         "viewCask": "View Cask",
         "flatpakDesc": "Linux Application Sandboxing",
         "viewFlathub": "View on Flathub",
-        "legalPrivacy": "Legal & Privacy"
+        "legalPrivacy": "Legal & Privacy",
+        "downloadingIn": "Downloading in {{count}} seconds...",
+        "pleaseWait": "Please wait while we prepare your download.",
+        "advertisement": "Advertisement"
     },
     "featureCards": {
         "browsing": {
